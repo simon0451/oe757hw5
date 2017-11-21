@@ -20,9 +20,11 @@ totalm = [445.3 447.3 372.4 532.2 732.9]; %total mass of each location
 
 L1 = L(1,:);
 
-%gives an array that tells what percent of the total mass is in a specific sieve size
 for i = 1:length(L1+1)
-Ri(i) = 100*((L1(i))./totalm(1));
+Ri(i) = (totalm-L1(i))/totalm; %how much of the sediment *isn't* in this size 
+end
+for i = 1:length(L1+1)
+ri(i) = L1(i) 
 end
 
 
