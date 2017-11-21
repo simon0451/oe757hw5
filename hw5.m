@@ -5,6 +5,7 @@
 clear all;
 close all;
 
+%% Part 1
 sieve = [4 10 20 40 60 100 140 200]; %sieve size, where PAN is omitted
 
 sievedia = [4.75 2 .84 .425 .25 .149 .105 .074]; %grain diameters for each sieve size
@@ -25,13 +26,14 @@ L4 = L(4,:);
 L5 = L(5,:);
 
 %gives an array that tells what percent of the total mass is in a specific sieve size
-% for i = 1:length(L1+1)
-% Ri(i) = 100*((L1(i))./totalm(1));
-% end
-% 
-% for i = 1:length(L1+1)
-% Pi(i) = sum(Ri(i:end));
-% end
+for i = 1:length(L1+1)
+pdfL1(i) = 100*((L1(i))./totalm(1));
+pdfL2(i) = 100*((L2(i))./totalm(2));
+pdfL3(i) = 100*((L3(i))./totalm(3));
+pdfL4(i) = 100*((L4(i))./totalm(4));
+pdfL5(i) = 100*((L5(i))./totalm(5));
+end
+
 L1tot=sum(L1);
 L2tot=sum(L2);
 L3tot=sum(L3);
@@ -98,11 +100,20 @@ cdfL5td=100*sort(cdfL5t,'descend');
 
 figure(1)
 semilogy(sievedia,cdfL1td,'-o',sievedia,cdfL2td,'-o',sievedia,cdfL3td,'-o',sievedia,cdfL4td,'-o',sievedia,cdfL5td,'-o')
-title('Location 1-5 CDF')
+title('Cumulative Distributaion For Sediment Diameter')
 ylabel('Population Percentage')
 xlabel('Grain Diameter (mm)')
 legend('Location 1','Location 2','Location 3','Location 4','Location 5','location','southeast')
 grid on
+
+figure(2)
+semilogx(sievedia,pdfL1(1:end-1),'--o',sievedia,pdfL2(1:end-1),'--o',sievedia,pdfL3(1:end-1),'--o',sievedia,pdfL4(1:end-1),'--o',sievedia,pdfL5(1:end-1),'--o')
+title('Probability Distribution For Sediment Diameter')
+ylabel('Population Percentage')
+xlabel('Grain Diameter (mm)')
+legend('Location 1','Location 2','Location 3','Location 4','Location 5','location','southeast')
+grid on
+%seems to follow a log normal distribution
 
 %finding LD50 grain diameters in mm
 LD50L1 = interpolate(50,sievedia,cdfL1td);
@@ -110,6 +121,22 @@ LD50L2 = interpolate(50,sievedia,cdfL2td);
 LD50L3 = interpolate(50,sievedia,cdfL3td);
 LD50L4 = interpolate(50,sievedia,cdfL4td);
 LD50L5 = interpolate(50,sievedia,cdfL5td);
+
+%% Part 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
