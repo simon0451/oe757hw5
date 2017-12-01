@@ -135,13 +135,49 @@ specificgravity = bulkdensity/(porosity); %specific gravity of the sample
 sedimentdensity = specificgravity*1030; %kg/m^3, multiplying by water density to get Rho_s
 
 %% Part 3
- 
+load duck5.mat
 %finding critical shields parameter
 rho = 1030; %density of seawater, kilos per cubic meter
 g = 9.81; %m/s^2, acceleration of gravity
+U = mean(us);
+u = us-U;
+urms = mean((u.^2).^.5);
+
+V = mean(vs);
+v = vs-V;
+vrms = mean((v.^2).^.5);
+
+T = 10; %s, period of the wave
+uo = (sqrt(2))*(sqrt((urms^2)+(vrms^2))); %wave orbital velocity
 LD50all = [LD50L1 LD50L2 LD50L3 LD50L4 LD50L5]; %d50 values for all 5 locations, mm?
-% tauc = .5*rho*fc*usq
-% shieldscrit = tauc/(rho*(s-1)*g*LD50all)
+fc = .003; %some value from notes
+tauc = .5*rho*fc*U^2;
+shieldscrit = tauc./(rho.*(specificgravity-1).*g.*LD50all);
+do = 2*sqrt(2)*urms/(2*pi/T);
+fss = exp(5.213.*(2.5.*LD50all./((do./2)).^.194) -5.997);
+tss = (.5*fss*rho*(do*pi/T)^2);
+thetass = tss./(rho.*(specificgravity-1).*g.*LD50all);
+
+tauwc = (tauc.^2 + tss.^2 +2.*tauc.*tss).^.5;
+
+K = .4;
+CD = .5;
+ws = ((4/3).*(g.*LD50all./CD).*(sedimentdensity./rho-1)).^.5;
+ustar = sqrt(tss/rho);
+Ro = ws./(K.*ustar);
+
+%% Part 4
+
+MPM = (8.*(thetass-shieldscrit).^(3/2)).*LD50all.*sqrt(g.*LD50all.*(specificgravity-1)); %bedload transport
+thetar = .575959; %sand pile angle
+kw = (.0046/((specificgravity-1)*g));
+kc = (.0053/((specificgravity-1)*g));
+%no clue what these values are, not specified in the notes
+eb = 1;
+ec = 1;
+BBB = (kw*eb*(uo^3)/tan(thetar))+((kc*ec*(abs(sqrt(U^2+uo^2))^2)*U)/(tan(thetar)));
+
+
 
 
 
