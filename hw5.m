@@ -16,7 +16,7 @@ L = [0 .1 1.9 65.5 192 142.4 35.7 6.9 .8 %location 1 mass
 .3 3.3 51.2 89.5 130.3 200.2 50.8 6 .6 %location 4 mass
 0 1.1 33.5 239.5 390.3 64 4 .4 .1]; %location 5 mass
 
-totalm = [445.3 447.3 372.4 532.2 732.9]; %total mass of each location
+totalm = [445.3 447.3 372.4 532.2 732.9]; %g, total mass of each location
 
 
 L1 = L(1,:);
@@ -123,10 +123,104 @@ LD50L4 = interpolate(50,sievedia,cdfL4td);
 LD50L5 = interpolate(50,sievedia,cdfL5td);
 
 %% Part 2
+%What is the bulk density, sediment density, porosity, packing, and specific gravity of the sample at Location 2 
+bulkdensity = totalm(2)/270.9; %grams/cm^3, the 270.9 number was given sample container volume
+
+masswater = 544.9-totalm(2); %finding what portion of the sample is actually water
+volwater = masswater/1.03; %cm^3, finding the volume of the water in the sample
+e = volwater/270.9;
+porosity = 1-e; %unitless, porosity, "n"
+packing = 1-porosity; %unitless
+specificgravity = bulkdensity/(porosity); %specific gravity of the sample
+sedimentdensity = specificgravity*1030; %kg/m^3, multiplying by water density to get Rho_s
+
+%% Part 3
+ 
+%finding critical shields parameter
+rho = 1030; %density of seawater, kilos per cubic meter
+g = 9.81; %m/s^2, acceleration of gravity
+LD50all = [LD50L1 LD50L2 LD50L3 LD50L4 LD50L5]; %d50 values for all 5 locations, mm?
+% tauc = .5*rho*fc*usq
+% shieldscrit = tauc/(rho*(s-1)*g*LD50all)
 
 
 
 
+
+
+
+
+
+
+%% Part 5
+
+load part5data.mat
+
+%after = the bathymetry data after the hurricane, depth in meters
+%before = the bathymetry data before the hurricane, depth in meters
+%offshoredistance = the distance from the beach, meters
+%FRFwaterlevelmeters = the tide, meters
+%currentsawac5 = the water current at a point called awac 5
+%currentsawac6 = the water current at a point called awac 6
+%WindSpeedms = the windspeed in meters per second
+%wavesawac5Hs = wave height at awac 5, meters
+%wavesawac6Hs = wave height at awac 6, meters
+
+%bathymetry information
+figure(5)
+plot(offshoredistance,before,offshoredistance,after)
+title('Bathymetry of Duck Beach Before and After Tropical Storm Beryl')
+xlabel('Offshore Distance (m)')
+ylabel('Seafloor Profile (m)')
+legend('Pre-Storm','Post-Storm')
+grid on
+
+sampleint = 6; %six minutes per sample, 240 samples per day
+timespan = (0:6:10080); %minutes
+timespandays = timespan/1440;
+
+timewind = 0:10.58:(7*1440);
+winddays = timewind/1440;
+
+timeheight = 0:60:1440*7;
+heightdays = timeheight/1440;
+
+currentheight = 0:120:1440*7;
+currentdays = currentheight/1440;
+
+%tidal information
+figure(6)
+plot(timespandays,FRFwaterlevelmeters)
+title('Tides From May 6th to June 2nd')
+xlabel('Time Since May 6th (days)')
+ylabel('Water Level Deviation From Mean (m)')
+grid on
+
+%wind information
+figure(7)
+plot(winddays,WindSpeedms)
+title('Windspeed From May 6th to June 2nd')
+xlabel('Time Since May 6th (days)')
+ylabel('Wind Speed (m/s)')
+grid on
+
+%wave height information
+figure(8)
+plot(heightdays,wavesawac5Hs,heightdays,wavesawac6Hs)
+title('Wave Height From May 6th to June 2nd')
+xlabel('Time Since May 6th (days)')
+ylabel('Wave Height (m)')
+legend('AWAC 5','AWAC 6')
+grid on
+
+%current information
+figure(9)
+plot(currentdays,currentsawac5,currentdays,currentsawac6)
+title('Current From May 6th to June 2nd')
+xlabel('Time Since May 6th (days)')
+ylabel('Current (m/s)')
+legend('AWAC 5','AWAC 6')
+grid on
 
 
 
